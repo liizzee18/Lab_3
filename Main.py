@@ -2,10 +2,11 @@ import NodeAVL
 import NodeRB
 import math
 
-
+# (mawilliams7) Spacing across file is not uniform. Consider adopting uniform spacing.
+# (mawilliams7) Consider writing function docstrings for each of your functions so it is more clear as to what you are doing
 # Creates the AVL tree by reading the file and inserting the words to the tree
 def AVL_tree(AVLTree):
-
+	# (mawilliams7) I am unsure what this line is doing. Please add comment to clarify
 	tree = type_of_tree.NodeAVL()
  	line = [] 
  	file = open('glove.6B.50d.txt', 'r')
@@ -35,6 +36,7 @@ def RB_Tree(RBTree)
 
  		if ignore(w):  #if the word is a character then it's ignored 
  			emmbeddings = [50] 
+			# (mawilliams7) I am unsure what this code segment is doing. Consider adding comment to clarify.
  			for i in range (emmbeddings.length):
  				emmbeddings[i] = line[i+1]
  			tree.insert(emmbeddings, w)  #inserts the word
@@ -42,6 +44,7 @@ def RB_Tree(RBTree)
  	return tree		
 
 # Tells apart the words from symbols 
+# (mawilliams7) The logic of this function is unclear. When is the function false and when is it true?
 def ignore(word):
 	ascii = word[0] 
         if ascii < 97 || ascii > 122 :
@@ -91,14 +94,14 @@ def cos_similarity(tree, w0,w1):
 # Given either a AVL or RB tree a file is generated with the contained words 
 def generate_file(root):
   new_file = "words_in_tree.txt"
-
+  # (mawilliams7) Below code is incomplete
   with open("new_file", "w", encoding='UTF8') as words_in_tree_file:
             words_in_tree(red_black, words_in_tree_file
 
     if root is None:
 
         return None
-
+    # (mawilliams7) Using recursion when writing files is not common practice. Consider using an iterative approach
     new_file.write(root.item, " ")
     generate_file(root.right)
     generate_file(root.left)
@@ -110,7 +113,7 @@ def generate_file(root):
 def generate_file_D(tree,d):
 
 	file_depth = "words_at_d.txt"
-
+# (mawilliams7) Same comment as above. As a matter of fact, I'm unsure of the behavior of the writer when it is writing to a file across multiple instances. This is worth looking into to improve the implementation.
 with open(file_depth, "w", encoding='UTF8') as file:
             words_at_d(tree, d, file
 
@@ -129,7 +132,7 @@ def main():
 	
 	# Giving the user to choose between trees
 	usr_input = int(input("1. AVL Tree\n 2. Red Black Tree\n'")
-
+	# (mawilliams7) Fix if-elif block spacing so this code segment is more clear
 		if usr_input == 1:
 
 			tree = NodeAVL(AVLTree)
