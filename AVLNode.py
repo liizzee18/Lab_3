@@ -8,8 +8,6 @@ def __init__(self, item, embedding=None):
         self.height = 0
         self.embedding = embedding
 
-
-#
 def get_balance(self):
 
 	left_height = -1
@@ -22,7 +20,6 @@ def get_balance(self):
 	
 	return left_height - right_height
 
-#
 def update_height(self):
 
 	left_height = -1
@@ -97,7 +94,7 @@ def find(self,item):
                 curr_node = curr_node.right
             else:
                 curr_node = curr_node.left
-#
+
 def rebalance(self, AVLNode):
 	if AVLNode.get_balance() == -2:
     	if AVLNode.right.get_balance() == 1:
@@ -109,7 +106,7 @@ def rebalance(self, AVLNode):
         	self.rotate_left(AVLNode.left)
             return self.rotate_right(AVLNode)
     return AVLNode
-#
+
 def remove_item(self, item):
 	node = self.search(item)
     if node is None:
@@ -117,7 +114,7 @@ def remove_item(self, item):
     else:
         return self.remove_node(node)
 
-#
+
 def rotate_right(self, AVLNode):
 
 	left_right_child = AVLNode.left.right
@@ -129,7 +126,7 @@ def rotate_right(self, AVLNode):
         AVLNode.left.set_child("right", AVLNode)
         AVLNode.set_child("left", left_right_child)
 
-#
+
 def rotate_left(self, AVLNode):
 	
 	right_left_child = AVLNode.right.left
