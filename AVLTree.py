@@ -1,7 +1,7 @@
 class AVLNode:
 
 def __init__(self, item, embedding=None):
-        self.item = item
+        self.key = key
         self.parent = None
         self.left = None
         self.right = None
