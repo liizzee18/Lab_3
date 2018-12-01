@@ -1,177 +1,125 @@
 import AVLTree
-import Red_Black_Tree
-import pdb
+import RedBlackTree
 import math
 
-
-#This is the main method in which calls the rest of the methods
-def main():
-
-    user = input("AVL Tree [a]  Red Black Tree [r] ")
-    n = user
-
-    if user is 'a' or 'A':
-        
-        avl_tree = create_AVL_Tree("glove.6B.50d.txt", AVLTree)
-        temp = avl_tree
-        usr_output(temp,n)
-
-    elif user is 'r':
-
-        rb_tree = create_Red_Black_Tree("glove.6B.50d.txt", Red_Black_Tree)
-        temp = rb_tree
-        usr_output(temp,n)
-
-
-#This method handles the printing statments along with getting the user's input 
-def usr_output(tree_type , n):
-
-    if n is 'a' or 'A':
-        avl_copy = tree_type.root 
-
-        print(" Number of Nodes : ", count_nodes(avl_copy.root))
-        print("Height of Tree :", height(avl_copy.root))
-
-        d = input("Pick a depth")         
-        words_depth(avl_copy, "words_at_d.txt" , d)
-
-        print(" Words in the tree: ")
-        with open("words_in_tree.txt", "w") as file2:
-            words_in_tree(avl_copy, file2)
-
-        print("Comparing words: ")
-        compare("similarities.txt", avl_tree)
-
-    elif n is 'r' or 'R':
-        rb_copy = tree_type.root
-
-        print(" Number of Nodes : ", count_nodes(rb_copy.root))
-        print("Height of Tree :", height(rb_copy.root))
-
-        d = input("Pick a depth")        
-        words_depth(rb_copy, "words_at_d.txt" , d)
-
-        print(" Words in the tree: ")
-        with open("words_in_tree.txt", "w") as file2:
-            words_in_tree(rb_copy, file2)
-
-        print("Comparing words: ")
-        compare("similarities.txt", rb_copy)
-
-
-# Creates the AVL Tree
-def create_AVL_Tree(filename, type_of_tree):
-
-    tree = type_of_tree.AVLTree()
-    with open(filename, encoding='UTF8') as dictionary:
+#Creates the AVL Tree based on user input 
+def init_AVL(file, tree):
+    avl_tree = tree.AVLTree()
+    with open(file, encoding='UTF8') as dictionary:
         for line in dictionary:
+            word = line.split(" ",1)[0]
             items = line.split()
-            if items.pop(0).isalpha():
-                items = string_to_float(items[1:51])
-                tree.insert(type_of_tree.AVLNode(items.pop(0), items))
-
+            if word.isalpha():
+                items = convert(items[1:51])
+                avl_tree.insert(tree.AVLNode(word, items))
     return tree
-
-
-# Creates the RB Tree 
-def create_Red_Black_Tree(filename, type_of_tree):
-    tree = type_of_tree.Red_Black_Tree()
-
-    with open(filename, encoding='UTF8') as file:
+# Creates the RB Tree based on user input 
+def init_RedBlackTree(file, tree):
+    rbt = tree.RedBlackTree()
+    with open(file, encoding='UTF8') as file:
         for line in file:
+            word = line.split(" ", 1)[0]
             items = line.split()
-            if items.pop(0).isalpha():
-                items = string_to_float(items[1:51])
-                tree.insert(type_of_tree.RBNode(items.pop(0), None, items))
+            if word.isalpha():
+                items = convert(items[1:51])
+                rbt.insert(tree.RBTNode(word, None, items))
     return tree
+# This method visits the desired depth of the trees
+def wordsDepth(root, new_file, d):
 
+        if root is None:
+            return
+        if d < 0:
+            new_file.write(root.key + "\n")
+            return
+        else:
+            wordsDepth(root.left, new_file, d - 1)
+            wordsDepth(root.right, new_file, d - 1)
+            
+#This method counts the number of node for each tree             
+def numNodes(root):
+        if root is None:
+            return 0
+        return 1 + numNodes(root.right) + numNodes(root.left)
+ 
+#This method converts between strings to floats
+def convert(a):
+        embed = []
+        size = len(a)
+        for i in range(size):
+            embed.append(float(a[i]))
+        return embed
 
-# Computes the height of the tree
+#This method computes heigth of the tree
 def height(root):
-    if root is None:
-        return -1
-    hr = height(root.right)
-    hl = height(root.left)
-    if hl < hr:
-        return 1 + hl
-    return 1 + hr
-
-# Counts the nodes of the overall tree
-def count_nodes(root):
-    if root is None:
-        return 0
-    return 1 + count_nodes(root.right) + count_nodes(root.left)
-
-#This method generates a file with all the nodes(words)
-def words_in_tree(root, file):
-    if root is None:
-        return None
-
-    file.write(root.item, " ")
-    words_in_tree(root.right)
-    words_in_tree(root.left)
-
-#This method generates the file with the desired depth along its nodes (words)
-def words_depth(x, file, d):
-    f = open(file,"a")   
-    if x is None:
-        return
-    if d == 0:       
-        f.write(x.item + "\n")
-    else:
-        words_depth(x.left, file, d - 1)
-        words_depth(x.right, file, d - 1)
-
-#This method prints the entire tree
-def print_tree(root):
-    pdb.set_trace()
-    if root is not None:
-        if root.right is not None and root.left is not None:
-            print(root.item, " ")
-
-        print_tree(root.right)
-        print_tree(root.left)
-
-
-#This method handles the conversion between strings to a floats, mainly used for embeddings 
-def string_to_float(holding_array):
-    converted = []
-    length = (len(holding_array))
-    for i in range(length):
-        converted.append(float(holding_array[i])) # convert to float
-    # print(converted)
-    return converted
-
-
-
-# Comparing words with the given second file 
-def compare(filename, T):
+        if root is None:
+            return -1
+        right = height(root.right)
+        left = height(root.left)
+        if left < right:
+            return 1 + left
+        return 1 + right
+    
+#This method prints the full tree     
+def wordsTree(root, file):
+        if root is None:
+            return None
+        file.write(root.item, " ")
+        wordsTree(root.right)
+        wordsTree(root.left)
+        
+#This method compares the similarities of the words with the given second file 
+def compare_sim(filename, T):
     with open(filename) as support:
         for line in support:
             print(line.split()[0] + " " + line.split()[1] + " " + str(similarity(T, line.split()[0], line.split()[1])))
-
-
-
+            
 # This method computes similarity according to the given formmula
 def similarity(tree, word1, word2):
-    wo1 = tree.find(word1)
-    wo2 = tree.find(word2)
+    w1 = tree.find(word1)
+    w2 = tree.find(word2)
     top = 0
-    bottom_a = 0
-    bottom_b = 0
-    for i in range(len(wo1.embedding)):
-        top += wo1.embedding[i] + wo2.embedding[i]
+    a = 0
+    b = 0
+    for i in range(len(w1.embedding)):
+        num += w1.embedding[i] + w2.embedding[i]
 
-    for i in range(len(wo1.embedding)):
-        bottom_a += wo1.embedding[i] ** 2
+    for i in range(len(w1.embedding)):
+        den_a += w1.embedding[i] ** 2
 
-    for i in range(len(wo2.embedding)):
-        bottom_b += wo2.embedding[i] ** 2
+    for i in range(len(w2.embedding)):
+        den_b += w2.embedding[i] ** 2
 
-    bottom_a = math.sqrt(bottom_a)
-    bottom_b = math.sqrt(bottom_b)
+    a = math.sqrt(a)
+    b = math.sqrt(b)
 
-    return top / (bottom_a * bottom_b)
+    return num / (a * b)
 
+#The main method handles the user's input and creating of the files.
+def main():
+       user_input = int(input("AVL Tree [0] 1. Red-Black Tree [1] "))
 
+        if user_input == 0:
+            print("AVL Tree:")
+            tree = init_AVL("glove.6B.50d.txt", AVLTree)
+            print("Number of nodes in tree: ", numNodes(tree.root))
+            print("Height of tree:", height())
+            depth = int(input("Select a depth to traverse to."))
+            with open("words_at_d.txt", "w", encoding='UTF8') as file:
+                wordsDepth(tree, depth, file)
+            with open("wordsTree.txt", "w", encoding='UTF8') as wordsTree_file:
+                wordsTree(tree, wordsTree_file)
+            compare_sim("sim.txt", tree)
+
+        if user_input == 1:
+            print("Red-Black Tree:")
+            tree = init_RedBlackTree("glove.6B.50d.txt", RedBlackTree)
+            print("Number of nodes in tree: ", numNodes(tree.root))
+            print("Height of tree:", height())
+            depth = int(input("Select a depth to traverse to."))
+            with open("words_at_d.txt", "w", encoding='UTF8') as file:
+                wordsDepth(tree, depth, file)
+            with open("wordsTree.txt", "w", encoding='UTF8') as wordsTree_file:
+                wordsTree(tree, wordsTree_file)
+            compare_sim("sim.txt", tree)
 main()
