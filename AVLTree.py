@@ -1,4 +1,4 @@
-class NodeAVL:
+class AVLNode:
 
 def __init__(self, item, embedding=None):
         self.item = item
